@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require("mongoose")
+var dotenv = require("dotenv")
+dotenv.config()
+mongoose.set('strictQuery', true)
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -14,11 +17,12 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//Database
 const mongoDB = "mongodb://localhost:27017/testdb"
 mongoose.connect(mongoDB)
 mongoose.Promise = Promise
 const db = mongoose.connection
-db.on("error", cconsole.error.bind(console, "MongoDB connection error"))
+db.on("error", console.error.bind(console, "MongoDB connection error"))
 
 
 app.use(logger('dev'));
