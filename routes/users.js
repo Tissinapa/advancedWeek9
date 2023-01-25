@@ -31,7 +31,7 @@ router.post("/user/register",body("email"),body("password"),
       throw err;
     };  
     if(user){
-      return res.sendStatus(403).json({email: "Email already in use."});
+      return res.status(403).json({email: "Email already in use."});
     }else {
       bcrypt.genSalt(10,(err, salt)=>{
         bcrypt.hash(req.body.password, salt, (err, hash)=>{
@@ -42,7 +42,7 @@ router.post("/user/register",body("email"),body("password"),
               password: hash
             },(err,ok)=>{
               if(err) throw err;
-              return res.send(ok)
+              return res.send("ok")
             }
           );
         });
