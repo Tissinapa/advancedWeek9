@@ -6,6 +6,7 @@ const mongoose = require("mongoose")
 const {body, validationResult} = require("express-validator")
 const jwt = require("jsonwebtoken")
 const User = require("../models/Users")
+const passport  = require("passport-jwt")
 const validateToken = require("../auth/validation.js")
 
 
@@ -17,14 +18,17 @@ router.get('/', (req, res, next) => {
 
   res.send('toimii');
 });
-router.get('/private', (req, res, next) => {
 
-  res.send('Tämä on tosi salainen jutska');
+router.get('/private', validateToken, (req, res, next) => {
+
+  res.send({email: req.body.email})
+  //res.send('Tämä on tosi salainen jutska');
 });
 
 //Login
-router.post('/user/login', body("email").trim().escape(),
-body("password").trim().escape(),
+router.post('/user/login', 
+  body("email").trim().escape(),
+  body("password").trim().escape(),
 (req, res, next) => {
   User.findOne({email: req.body.email},(err, user)=>{
     if(err){
@@ -66,7 +70,6 @@ router.post("/user/register",
   body("email").isEmail(),
   body("password").isStrongPassword(),
 (req, res, next) =>{
-  //Validation
   const errors = validationResult(req)
   if(!errors.isEmpty()){
     return res.status(400).json({errors: errors.array()})
@@ -95,6 +98,11 @@ router.post("/user/register",
       });
     }
   });
+});
+
+router.get('/todos', (req, res, next) => {
+
+  res.send('todos toimii');
 });
 
 module.exports = router;
