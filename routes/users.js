@@ -22,6 +22,7 @@ router.get('/private', (req, res, next) => {
   res.send('Tämä on tosi salainen jutska');
 });
 
+//Login
 router.post('/user/login', body("email").trim().escape(),
 body("password").trim().escape(),
 (req, res, next) => {
@@ -32,6 +33,7 @@ body("password").trim().escape(),
     if(!user){
       return res.status(403).json({error: "Login failed."});
     } else {
+
       bcrypt.compare(req.body.password, user.password,(err,match)=>{
         if(err){
           throw err
@@ -57,17 +59,19 @@ body("password").trim().escape(),
 
   })
 
-
-  
 });
 
-router.post("/user/register",body("email"),body("password"),
+//Register
+router.post("/user/register",
+  body("email").isEmail(),
+  body("password").isStrongPassword(),
 (req, res, next) =>{
+  //Validation
   const errors = validationResult(req)
   if(!errors.isEmpty()){
     return res.status(400).json({errors: errors.array()})
   }
-  
+
   User.findOne({email: req.body.email},(err, user) => {
     if(err) {
       throw err;
