@@ -6,6 +6,8 @@ const mongoose = require("mongoose")
 const {body, validationResult} = require("express-validator")
 const jwt = require("jsonwebtoken")
 const User = require("../models/Users")
+const validateToken = require("../auth/validation.js")
+
 
 
 router.use(express.json());
@@ -14,6 +16,10 @@ router.use(bodyParser.json())
 router.get('/', (req, res, next) => {
 
   res.send('toimii');
+});
+router.get('/private', (req, res, next) => {
+
+  res.send('Tämä on tosi salainen jutska');
 });
 
 router.get('/user/login', body("email").trim().escape(),
