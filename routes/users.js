@@ -32,12 +32,12 @@ body("password").trim().escape(),
     if(!user){
       return res.status(403).json({error: "Login failed."});
     } else {
-      bcrypt.compare(req.body.password, user.password,(err,isMatch)=>{
+      bcrypt.compare(req.body.password, user.password,(err,match)=>{
         if(err){
           throw err
-        }if(isMatch){
+        }if(match){
           const tokenPayload = {
-            //id: user._id,
+            id: user._id,
             email: user.email
           }
           jwt.sign(
@@ -48,10 +48,9 @@ body("password").trim().escape(),
             },
             (err, token)=>{
               if(err) throw err;
-              res.send({succes: true,token: token})
+               return res.send({success: true,token: token})
             }
           )
-
         }
       })
     }
