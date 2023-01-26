@@ -23,7 +23,7 @@ router.get('/private', (req, res, next) => {
 });
 
 router.post('/user/login', body("email").trim().escape(),
-body("password").escape(),
+body("password").trim().escape(),
 (req, res, next) => {
   User.findOne({email: req.body.email},(err, user)=>{
     if(err){
@@ -37,7 +37,7 @@ body("password").escape(),
           throw err
         }if(isMatch){
           const tokenPayload = {
-            id: user._id,
+            //id: user._id,
             email: user.email
           }
           jwt.sign(
@@ -47,7 +47,8 @@ body("password").escape(),
               expiresIn: 120
             },
             (err, token)=>{
-              res.json({succes: true,token: token})
+              if(err) throw err;
+              res.send({succes: true,token: token})
             }
           )
 
