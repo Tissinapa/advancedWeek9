@@ -22,7 +22,7 @@ router.get('/private', (req, res, next) => {
   res.send('Tämä on tosi salainen jutska');
 });
 
-router.get('/user/login', body("email").trim().escape(),
+router.post('/user/login', body("email").trim().escape(),
 body("password").escape(),
 (req, res, next) => {
   User.findOne({email: req.body.email},(err, user)=>{
