@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt")
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose")
 const {body, validationResult} = require("express-validator")
+const jwt = require("jsonwebtoken")
 const User = require("../models/Users")
 
 
@@ -15,8 +16,43 @@ router.get('/', (req, res, next) => {
   res.send('toimii');
 });
 
-router.get('/user/register', (req, res, next) => {
-  res.send('toimiiko edes');
+router.get('/user/login', body("email").trim().escape(),
+body("password").escape(),
+(req, res, next) => {
+  User.findOne({email: req.body.email},(err, user)=>{
+    if(err){
+      throw err
+    }
+    if(!user){
+      return res.status(403).json({error: "Login failed."});
+    } else {
+      bcrypt.compare(req.body.password, user.password,(err,isMatch)=>{
+        if(err){
+          throw err
+        }if(isMatch){
+          const tokenPayload = {
+            id: user._id,
+            email: user.email
+          }
+          jwt.sign(
+            tokenPayload,
+            process.env.SECRET,
+            {
+              expiresIn: 120
+            },
+            (err, token)=>{
+              res.json({succes: true,token: token})
+            }
+          )
+
+        }
+      })
+    }
+
+  })
+
+
+  
 });
 
 router.post("/user/register",body("email"),body("password"),
