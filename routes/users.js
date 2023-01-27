@@ -28,8 +28,8 @@ router.get('/private', validateToken, (req, res, next) => {
 
 //Login
 router.post('/user/login', 
-  body("email").trim().escape(),
-  body("password").trim().escape(),
+  body("email").trim(),
+  body("password").trim(),
 (req, res, next) => {
   User.findOne({email: req.body.email},(err, user)=>{
     if(err){
@@ -55,7 +55,7 @@ router.post('/user/login',
             },
             (err, token)=>{
               if(err) throw err;
-               return res.json({success: true,token})
+               return res.send({success: true,token: token})
             }
           )
         }
