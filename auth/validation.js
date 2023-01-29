@@ -9,9 +9,9 @@ module.exports = function(req,res,next){
         token = null
     }
     if(token == null) return res.sendStatus(401)
-    jwt.verify(token , process.env.SECRET, (err, user)=>{
+    jwt.verify(token , process.env.SECRET, (err,email)=>{
         if(err)return res.sendStatus(401)
-        req.user = user
+        req.email = email
         next()
     })
 

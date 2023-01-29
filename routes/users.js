@@ -21,7 +21,7 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/private', validateToken, (req, res, next) => {
-
+  
   res.send({email: req.body.email})
   //res.send('Tämä on tosi salainen jutska');
 });
@@ -51,7 +51,7 @@ router.post('/user/login',
             tokenPayload,
             process.env.SECRET,
             {
-              expiresIn: 120  
+              expiresIn: 1200  
             },
             (err, token)=>{
               if(err) throw err;
@@ -101,9 +101,42 @@ router.post("/user/register",
   });
 });
 
-router.get('/todos', (req, res, next) => {
-
-  res.send('todos toimii');
+//Todo
+router.post('/todos', validateToken,body("items"),body("email"),(req, res, next) => {
+  const userEmail = req.body.email
+  
+  Todo.findOne({user: User._id},(err, user) => {
+    if(err) {
+      throw err;
+    };  
+    if(user){
+      console.log(user._id)
+      Todo.insertMany(
+        {
+          items: req.body.items}, 
+        (err , ok)=>{
+        if(err) throw err;
+        
+        //console.log(ok._id)
+        return res.send("ok")
+      })
+      //return res.status(403).json({email: "Email already in use."});
+    }else {
+      console.log(user.items)
+      console.log(req.body.items)
+      if(err) throw err;
+      Todo.create(
+        {user: user._id,
+          items: req.body.items}, 
+        (err , ok)=>{
+        if(err) throw err;
+          
+          //console.log(ok._id)
+        return res.send("ok")
+      })
+    }
+  })
+  
 });
 
 module.exports = router;
