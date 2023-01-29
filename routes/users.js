@@ -51,7 +51,7 @@ router.post('/user/login',
             tokenPayload,
             process.env.SECRET,
             {
-              expiresIn: 1200  
+              expiresIn: 120  
             },
             (err, token)=>{
               if(err) throw err;
@@ -104,7 +104,7 @@ router.post("/user/register",
 //Todo
 router.post('/todos', validateToken,body("items"),body("email"),(req, res, next) => {
   const userEmail = req.body.email
-  
+
   Todo.findOne({user: User._id},(err, user) => {
     if(err) {
       throw err;
