@@ -117,10 +117,10 @@ router.post('/todos', validateToken,body("items"),body("email"),(req, res, next)
         (err , ok)=>{
         if(err) throw err;
         
-        //console.log(ok._id)
+        
         return res.send("ok")
       })
-      //return res.status(403).json({email: "Email already in use."});
+     
     }else {
       console.log(user.items)
       console.log(req.body.items)
